@@ -91,9 +91,23 @@ export default function Shop() {
           <div className="bg-white border border-gray-100 rounded-xl p-3 space-y-3 sticky top-16">
             <h3 className="text-sm font-semibold text-gray-900">Categories</h3>
             <ul className="space-y-0.5">
-              <li><button onClick={() => updateFilter('category', '')} className={`w-full text-left px-2 py-1.5 rounded-lg text-sm ${!currentCategory ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'}`}>All</button></li>
+              <li>
+                <button
+                  onClick={() => { updateFilter('category', ''); setFiltersOpen(false); }}
+                  className={`w-full text-left px-2 py-1.5 rounded-lg text-sm ${!currentCategory ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
+                  All
+                </button>
+              </li>
               {categories.map((cat) => (
-                <li key={cat.id}><button onClick={() => updateFilter('category', cat.slug)} className={`w-full text-left px-2 py-1.5 rounded-lg text-sm ${currentCategory === cat.slug ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'}`}>{cat.name} <span className="text-xs opacity-60">({cat._count?.products || 0})</span></button></li>
+                <li key={cat.id}>
+                  <button
+                    onClick={() => { updateFilter('category', cat.slug); setFiltersOpen(false); }}
+                    className={`w-full text-left px-2 py-1.5 rounded-lg text-sm ${currentCategory === cat.slug ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+                  >
+                    {cat.name} <span className="text-xs opacity-60">({cat._count?.products || 0})</span>
+                  </button>
+                </li>
               ))}
             </ul>
           </div>
