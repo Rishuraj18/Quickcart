@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FlickCart</string>
+    <string name="title_activity_main">FlickCart</string>
+    <string name="package_name">com.flickcart.app</string>
+    <string name="custom_url_scheme">com.flickcart.app</string>
+</resources>

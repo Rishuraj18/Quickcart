@@ -112,42 +112,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Categories */}
-      {/* {categories.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-gray-900">Shop by Category</h2>
-            <Link to="/shop" className="text-sm text-blue-600 hover:underline flex items-center gap-0.5">
-              View all <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-            {categories.map((cat) => (
-              <Link key={cat.id} to={`/shop?category=${cat.slug}`} className="group text-center">
-                <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-1.5 border border-gray-100 group-hover:border-blue-200 transition-colors">
-                  {cat.image ? (
-                    <img
-                      src={
-                        cat.image?.startsWith('http')
-                          ? cat.image
-                          : `${IMG_BASE}${cat.image}`
-                      }
-                      alt={cat.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">
-                      {cat.name.charAt(0)}
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs font-medium text-gray-700 truncate">{cat.name}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )} */}
-
 
       {categories.length > 0 && (
   <section>
