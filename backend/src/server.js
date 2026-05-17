@@ -13,6 +13,7 @@ app.use(cors({
     'https://flickcart.netlify.app',
     'http://localhost:5173',
     'http://localhost',
+    'https://localhost',
     'capacitor://localhost'
   ],
   credentials: true
