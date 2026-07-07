@@ -93,7 +93,7 @@ exports.create = async (req, res, next) => {
         stock: parseInt(stock || 0),
         brand: brand || null,
         rating: parseFloat(rating || 0),
-        categoryId: parseInt(categoryId),
+        categoryId,
         isFeatured: isFeatured === 'true' || isFeatured === true,
       },
       include: { category: true, images: true },
@@ -121,7 +121,7 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { title, slug, description, price, discount, stock, brand, rating, categoryId, isFeatured } = req.body;
 
     const data = {};
@@ -133,7 +133,7 @@ exports.update = async (req, res, next) => {
     if (stock !== undefined) data.stock = parseInt(stock);
     if (brand !== undefined) data.brand = brand;
     if (rating !== undefined) data.rating = parseFloat(rating);
-    if (categoryId !== undefined) data.categoryId = parseInt(categoryId);
+    if (categoryId !== undefined) data.categoryId = categoryId;
     if (isFeatured !== undefined) data.isFeatured = isFeatured === 'true' || isFeatured === true;
 
     const product = await prisma.product.update({
@@ -163,7 +163,7 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await prisma.product.delete({ where: { id } });
     res.json({ message: 'Product deleted successfully.' });
   } catch (error) {
@@ -173,7 +173,7 @@ exports.remove = async (req, res, next) => {
 
 exports.deleteImage = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.imageId);
+    const id = req.params.imageId;
     await prisma.productImage.delete({ where: { id } });
     res.json({ message: 'Image deleted.' });
   } catch (error) {

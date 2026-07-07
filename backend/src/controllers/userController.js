@@ -19,7 +19,7 @@ exports.getAll = async (req, res, next) => {
 // Admin: update user role
 exports.updateRole = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { role } = req.body;
     const user = await prisma.user.update({
       where: { id },
@@ -35,7 +35,7 @@ exports.updateRole = async (req, res, next) => {
 // Admin: block/unblock user
 exports.updateStatus = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { status } = req.body;
     const user = await prisma.user.update({
       where: { id },
@@ -51,7 +51,7 @@ exports.updateStatus = async (req, res, next) => {
 // Admin: delete user
 exports.remove = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await prisma.user.delete({ where: { id } });
     res.json({ message: 'User deleted.' });
   } catch (error) {
@@ -98,7 +98,7 @@ exports.addAddress = async (req, res, next) => {
 
 exports.deleteAddress = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await prisma.address.delete({ where: { id } });
     res.json({ message: 'Address deleted.' });
   } catch (error) {

@@ -5,7 +5,7 @@ exports.create = async (req, res, next) => {
     const { productId, rating, comment } = req.body;
 
     const existing = await prisma.review.findFirst({
-      where: { userId: req.user.id, productId: parseInt(productId) },
+      where: { userId: req.user.id, productId },
     });
     if (existing) {
       return res.status(409).json({ message: 'You have already reviewed this product.' });
@@ -14,7 +14,7 @@ exports.create = async (req, res, next) => {
     const review = await prisma.review.create({
       data: {
         userId: req.user.id,
-        productId: parseInt(productId),
+        productId,
         rating: parseInt(rating),
         comment,
       },
@@ -23,11 +23,11 @@ exports.create = async (req, res, next) => {
 
     // Update product average rating
     const agg = await prisma.review.aggregate({
-      where: { productId: parseInt(productId) },
+      where: { productId },
       _avg: { rating: true },
     });
     await prisma.product.update({
-      where: { id: parseInt(productId) },
+      where: { id: productId },
       data: { rating: Math.round((agg._avg.rating || 0) * 10) / 10 },
     });
 
@@ -39,7 +39,7 @@ exports.create = async (req, res, next) => {
 
 exports.getByProduct = async (req, res, next) => {
   try {
-    const productId = parseInt(req.params.productId);
+    const productId = req.params.productId;
     const reviews = await prisma.review.findMany({
       where: { productId },
       include: { user: { select: { id: true, name: true } } },
@@ -70,7 +70,7 @@ exports.getAll = async (req, res, next) => {
 // Admin: delete review
 exports.remove = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const review = await prisma.review.findUnique({ where: { id } });
     await prisma.review.delete({ where: { id } });
 

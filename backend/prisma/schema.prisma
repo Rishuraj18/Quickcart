@@ -3,27 +3,27 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  email     String   @unique
+  email     String    @unique
   password  String
-  role      String   @default("USER")
-  status    String   @default("ACTIVE")
+  role      String    @default("USER")
+  status    String    @default("ACTIVE")
   orders    Order[]
   cart      Cart?
   reviews   Review[]
   addresses Address[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   slug      String    @unique
   image     String?
@@ -33,17 +33,17 @@ model Category {
 }
 
 model Product {
-  id          Int            @id @default(autoincrement())
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   slug        String         @unique
-  description String         @db.Text
+  description String
   price       Float
   discount    Float          @default(0)
   stock       Int            @default(0)
   brand       String?
   rating      Float          @default(0)
   isFeatured  Boolean        @default(false)
-  categoryId  Int
+  categoryId  String         @db.ObjectId
   category    Category       @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
   reviews     Review[]
@@ -56,21 +56,21 @@ model Product {
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
   url       String
-  productId Int
+  productId String  @db.ObjectId
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   rating    Int
-  comment   String   @db.Text
-  userId    Int
+  comment   String
+  userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
-  productId Int
+  productId String   @db.ObjectId
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
@@ -79,8 +79,8 @@ model Review {
 }
 
 model Cart {
-  id        Int        @id @default(autoincrement())
-  userId    Int        @unique
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @unique @db.ObjectId
   user      User       @relation(fields: [userId], references: [id])
   items     CartItem[]
   createdAt DateTime   @default(now())
@@ -88,10 +88,10 @@ model Cart {
 }
 
 model CartItem {
-  id        Int     @id @default(autoincrement())
-  cartId    Int
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  cartId    String  @db.ObjectId
   cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  productId Int
+  productId String  @db.ObjectId
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
 
@@ -100,8 +100,8 @@ model CartItem {
 }
 
 model Address {
-  id        Int     @id @default(autoincrement())
-  userId    Int
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String  @db.ObjectId
   user      User    @relation(fields: [userId], references: [id])
   street    String
   city      String
@@ -114,8 +114,8 @@ model Address {
 }
 
 model Order {
-  id            Int         @id @default(autoincrement())
-  userId        Int
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String      @db.ObjectId
   user          User        @relation(fields: [userId], references: [id])
   totalAmount   Float
   status        String      @default("PENDING")
@@ -129,10 +129,10 @@ model Order {
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String  @db.ObjectId
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId Int
+  productId String  @db.ObjectId
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
@@ -142,7 +142,7 @@ model OrderItem {
 }
 
 model Banner {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   imageUrl  String
   linkUrl   String?

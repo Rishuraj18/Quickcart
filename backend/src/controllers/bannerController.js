@@ -42,7 +42,7 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { title, linkUrl, isActive } = req.body;
     const data = {};
     if (title !== undefined) data.title = title;
@@ -59,7 +59,7 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await prisma.banner.delete({ where: { id } });
     res.json({ message: 'Banner deleted.' });
   } catch (error) {

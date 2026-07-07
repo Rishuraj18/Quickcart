@@ -41,7 +41,7 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { name, slug } = req.body;
     const data = {};
     if (name) data.name = name;
@@ -57,7 +57,7 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     await prisma.category.delete({ where: { id } });
     res.json({ message: 'Category deleted.' });
   } catch (error) {

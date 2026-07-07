@@ -13,7 +13,7 @@ exports.create = async (req, res, next) => {
         status: 'PENDING',
         items: {
           create: items.map((item) => ({
-            productId: parseInt(item.productId),
+            productId: item.productId,
             quantity: parseInt(item.quantity),
             price: parseFloat(item.price),
           })),
@@ -27,7 +27,7 @@ exports.create = async (req, res, next) => {
     // Update product stock
     for (const item of items) {
       await prisma.product.update({
-        where: { id: parseInt(item.productId) },
+        where: { id: item.productId },
         data: { stock: { decrement: parseInt(item.quantity) } },
       });
     }
@@ -61,7 +61,7 @@ exports.getUserOrders = async (req, res, next) => {
 
 exports.getById = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const order = await prisma.order.findUnique({
       where: { id },
       include: {
@@ -116,7 +116,7 @@ exports.getAll = async (req, res, next) => {
 // Admin: update status
 exports.updateStatus = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { status } = req.body;
 
     const order = await prisma.order.update({

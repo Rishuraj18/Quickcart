@@ -38,7 +38,7 @@ exports.addItem = async (req, res, next) => {
     }
 
     const existingItem = await prisma.cartItem.findFirst({
-      where: { cartId: cart.id, productId: parseInt(productId) },
+      where: { cartId: cart.id, productId },
     });
 
     if (existingItem) {
@@ -48,7 +48,7 @@ exports.addItem = async (req, res, next) => {
       });
     } else {
       await prisma.cartItem.create({
-        data: { cartId: cart.id, productId: parseInt(productId), quantity: parseInt(quantity) },
+        data: { cartId: cart.id, productId, quantity: parseInt(quantity) },
       });
     }
 
@@ -69,7 +69,7 @@ exports.addItem = async (req, res, next) => {
 
 exports.updateItem = async (req, res, next) => {
   try {
-    const itemId = parseInt(req.params.itemId);
+    const itemId = req.params.itemId;
     const { quantity } = req.body;
 
     if (parseInt(quantity) <= 0) {
@@ -98,7 +98,7 @@ exports.updateItem = async (req, res, next) => {
 
 exports.removeItem = async (req, res, next) => {
   try {
-    const itemId = parseInt(req.params.itemId);
+    const itemId = req.params.itemId;
     await prisma.cartItem.delete({ where: { id: itemId } });
 
     const cart = await prisma.cart.findUnique({
