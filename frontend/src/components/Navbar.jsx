@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/static-components */
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Geolocation } from '@capacitor/geolocation';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   ShoppingCart,
@@ -93,38 +95,45 @@ export default function Navbar() {
 
   // Get Location
   const handleLocation = async () => {
-    if (!navigator.geolocation) {
-      setSelectedLocation('Geolocation not supported');
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-          );
-
-          const data = await response.json();
-
-          const city =
-            data?.address?.city ||
-            data?.address?.town ||
-            data?.address?.village ||
-            data?.address?.state ||
-            'Current Location';
-
-          setSelectedLocation(city);
-        } catch {
-          setSelectedLocation('Current Location');
+    try {
+      // Check and request permissions natively first
+      const permissions = await Geolocation.checkPermissions();
+      if (permissions.location !== 'granted') {
+        const req = await Geolocation.requestPermissions();
+        if (req.location !== 'granted') {
+          setSelectedLocation('Location denied');
+          return;
         }
-      },
-      () => {
-        setSelectedLocation('Location denied');
       }
-    );
+
+      // Show loading state
+      setSelectedLocation('Locating...');
+
+      // Get current position using Capacitor plugin
+      const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      const { latitude, longitude } = position.coords;
+
+      // Reverse Geocoding
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+      );
+      const data = await response.json();
+
+      const city = data?.address?.city || data?.address?.state || data?.address?.town || data?.address?.village;
+      const locality = data?.address?.suburb || data?.address?.neighbourhood || data?.address?.county;
+
+      let locationString = 'Current Location';
+      if (city && locality) {
+        locationString = `${city}, ${locality}`;
+      } else if (city || locality) {
+        locationString = city || locality;
+      }
+
+      setSelectedLocation(locationString);
+    } catch (error) {
+      console.error("Location error:", error);
+      setSelectedLocation('Current Location');
+    }
   };
 
   // Search

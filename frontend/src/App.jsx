@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import useAuthStore from './store/authStore';
@@ -40,6 +41,32 @@ function Loader() {
   );
 }
 
+function BackButtonHandler() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleBackButton = async () => {
+      // If we are on the home screen, exit the app
+      if (location.pathname === '/') {
+        await CapacitorApp.exitApp();
+      } else {
+        // Otherwise, just go back in history
+        navigate(-1);
+      }
+    };
+
+    // Register listener
+    const backButtonListener = CapacitorApp.addListener('backButton', handleBackButton);
+
+    return () => {
+      backButtonListener.then(listener => listener.remove());
+    };
+  }, [location.pathname, navigate]);
+
+  return null;
+}
+
 function App() {
   const user = useAuthStore((s) => s.user);
   const fetchCart = useCartStore((s) => s.fetchCart);
@@ -50,6 +77,7 @@ function App() {
 
   return (
     <Router>
+      <BackButtonHandler />
       <div className="min-h-screen bg-gray-50/50 flex flex-col font-sans">
         <Navbar />
         <main className="flex-1">
