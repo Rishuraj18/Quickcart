@@ -46,7 +46,9 @@ export default function Shop() {
   const updateFilter = (key, value) => {
     const params = new URLSearchParams(searchParams);
     if (value) params.set(key, value); else params.delete(key);
-    params.set('page', '1');
+    if (key !== 'page') {
+      params.set('page', '1');
+    }
     setSearchParams(params);
   };
 
